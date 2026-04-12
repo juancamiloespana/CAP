@@ -1,0 +1,4 @@
+4, Cols=4, block_size=1
+Row-major time: 0.000007 seconds
+Column-major time: 0.000003 seconds
+Z-order time: 0.000004 seconds

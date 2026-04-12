@@ -1,0 +1,13 @@
+# IDE
+.vscode/
+
+# Compiled C objects and binaries
+*.o
+*.so
+1-multiply_matrices
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.env

@@ -1,0 +1,19 @@
+Nodo de cálculo asignado: cpu1.hpc.dptoinformatica.uniovi.es \n
+
+
+################ Parámetros ################
+
+rows: 2000
+columns: 2000
+block size: 2
+
+################Tiempos ################
+
+Column-major: 43.485579 seconds
+Row-major: 54.695651 seconds
+Z-order: 62.489101 seconds
+
+
+################ Valores y direcciones ################
+
+Matrixes are too large to print.

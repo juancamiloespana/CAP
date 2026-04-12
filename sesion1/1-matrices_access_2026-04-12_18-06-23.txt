@@ -1,0 +1,18 @@
+
+
+################ Parámetros ################
+
+rows: 2000
+columns: 2000
+block size: 200
+
+################Tiempos ################
+
+Z-order: 34.915912 seconds
+Column-major: 42.952642 seconds
+Row-major: 49.861570 seconds
+
+
+################ Valores y direcciones ################
+
+Matrixes are too large to print.
