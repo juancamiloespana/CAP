@@ -47,15 +47,15 @@ void row_major_mul(int rows, int columns, int **A, int **B, int **C)
 {
     for (int i=0;i<rows;i++)
     {
-        for (int j=0;j<columns;j++)
-        {
-         
-           for (int k=0;k<rows;k++)
-           {
-            C[i][j]+=A[i][k]*B[k][j];
-           }
-            
-        }
+        for (int k=0;k<columns;k++)
+    	{
+	
+			for (int j=0;j<columns;j++)
+			{
+				C[i][j]+=A[i][k]*B[k][j];
+			}
+				
+		}
 
 
     }
@@ -65,11 +65,11 @@ void row_major_mul(int rows, int columns, int **A, int **B, int **C)
 // Function to multiply matrices in column-major order
 void column_major_mul(int rows, int columns, int **A, int **B, int **C)
 {
-    for (int j=0;j<columns;j++)
+    for (int j=0;j<rows;j++)
     {
-        for (int i=0;i<rows;i++)
-        {
-            for (int k=0;k<columns;k++)
+        for (int k=0;k<rows;k++)
+        {     
+           for (int i=0;i<columns;i++)
            {
             C[i][j]+=A[i][k]*B[k][j];
            }
@@ -81,20 +81,20 @@ void column_major_mul(int rows, int columns, int **A, int **B, int **C)
    
 }
 
-// Function to multiply matrices in Z order row-major order
+// Function to multiply matrices in Z order 
 void zorder_mul(int rows, int columns, int **A, int **B, int **C, int block_size)
 {
     for (int iB=0;iB<rows;iB+=block_size) //indice para fila de bloque salida
     {
-        for (int jB=0;jB<columns;jB+=block_size) //indice para columna de bloque salida
+        for (int kB=0;kB<rows;kB+=block_size) //indice para columna de bloque salida
         {
-            for (int kB=0;kB<rows;kB+=block_size) //indice compartido bloque entrada
+            for (int jB=0;jB<columns;jB+=block_size) //indice compartido bloque entrada
             {
                 for (int i=iB;i<iB+block_size && i<rows;i++)  //indice para fila de salida
                 {       
-                    for(int j=jB;j<jB+ block_size && j<columns;j++)  //indice para fila de salida
+                    for(int k=kB;k<kB+block_size && k<rows;k++)  //indice para fila de salida
                     {       
-                        for (int k=kB;k<kB+block_size && k<rows;k++)
+                        for (int j=jB;j<jB+ block_size && j<columns;j++)
                             {
                                 C[i][j]+=A[i][k]*B[k][j];
                             }
@@ -151,17 +151,20 @@ int main(int argc, char *argv[])
     start = clock();
     zorder_mul(rows, columns, A, B, C_zorder, block_size);
     end = clock();
-    printf("Z-order: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+	double time_zorder = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Z-order: %f seconds\n", time_zorder);
 
     start = clock();
     column_major_mul(rows, columns, A, B, C_columns);
     end = clock();
-    printf("Column-major: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+	double time_column = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Column-major: %f seconds\n", time_column);
 
 	start = clock();
     row_major_mul(rows, columns, A, B, C_rows);
     end = clock();
-    printf("Row-major: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+	double time_row = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Row-major: %f seconds\n", time_row);
 
 	
 
@@ -186,6 +189,8 @@ int main(int argc, char *argv[])
 		printf("Matrixes are too large to print.\n");
 	}
 
+
+	fprintf(stderr, "%d,%d,%d,%.4f,%.4f,%.4f\n", rows,columns,block_size,time_zorder,time_column,time_row);
 
 
 

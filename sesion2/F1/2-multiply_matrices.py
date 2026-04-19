@@ -88,7 +88,7 @@ if __name__ == "__main__":
 	zorder_time = time.time() - start_time
     
 
-	print(f'Rows={rows}, Cols={cols}, block_size={block_size}')
+	print(f'{rows}, Cols={cols}, block_size={block_size}')
 	print(f'Row-major time: {row_major_time:.6f} seconds')
 	print(f'Column-major time: {column_major_time:.6f} seconds')
 	print(f'Z-order time: {zorder_time:.6f} seconds')
