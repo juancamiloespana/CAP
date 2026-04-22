@@ -8,27 +8,42 @@
 // Function to allocate a matrix of size rows x columns
 int **allocate_matrix(int rows, int columns)
 {
-    int **matrix = malloc(rows * sizeof(int *));
-    for (int i = 0; i < rows; i++)
-    {
-        matrix[i] = malloc(columns * sizeof(int));
+   
+	// int **matrix = malloc(rows * sizeof(int *));
+    // for (int i = 0; i < rows; i++)
+    // {
+    //     matrix[i] = malloc(columns * sizeof(int));
+    // }
+
+	int **matrix = malloc(rows * sizeof(int *));
+    int *block = malloc(rows * columns * sizeof(int));  // one big contiguous block
+    for (int i = 0; i < rows; i++) {
+        matrix[i] = block + i * columns;  // each row pointer points into the block
     }
 
-
+	
     return matrix;
 }
 
 
 // Function to free the memory of the matrix
-void free_matrix(int rows, int **matrix)
+void free_matrix(int **matrix)
 {
-    for (int i=0;i<rows;i++)
-    {
-        free(matrix[i]);
-    }
-
-    free(matrix);
+    free(matrix[0]);  // free the contiguous data block
+    free(matrix);     // free the pointer array
 }
+
+// // Nueva firma: añadimos 'rows' para poder iterar
+// void free_matrix(int **matrix, int rows)
+// {
+//     for (int i = 0; i < rows; i++)
+//     {
+//         free(matrix[i]); // Liberamos cada fila individualmente
+//     }
+//     free(matrix); // Finalmente, liberamos el arreglo de punteros
+// }
+
+
 
 // Function to generate a random matrix of size rows x columns
 void generate_matrix(int rows, int columns, int **matrix)
@@ -90,11 +105,11 @@ void zorder_mul(int rows, int columns, int **A, int **B, int **C, int block_size
         {
             for (int jB=0;jB<columns;jB+=block_size) //indice compartido bloque entrada
             {
-                for (int i=iB;i<iB+block_size && i<rows;i++)  //indice para fila de salida
-                {       
-                    for(int k=kB;k<kB+block_size && k<rows;k++)  //indice para fila de salida
-                    {       
-                        for (int j=jB;j<jB+ block_size && j<columns;j++)
+                for (int i=iB;i<iB+block_size && i<rows;i++)
+                {
+                    for(int k=kB;k<kB+block_size && k<rows;k++)
+                    {
+                        for (int j=jB;j<jB+block_size && j<columns;j++)
                             {
                                 C[i][j]+=A[i][k]*B[k][j];
                             }
@@ -148,23 +163,29 @@ int main(int argc, char *argv[])
 	printf("\n\n################Tiempos ################\n\n");
    
 	
-    start = clock();
-    zorder_mul(rows, columns, A, B, C_zorder, block_size);
+	memset(C_rows[0], 0, rows * columns * sizeof(int));
+	start = clock();
+    row_major_mul(rows, columns, A, B, C_rows);
     end = clock();
-	double time_zorder = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Z-order: %f seconds\n", time_zorder);
+	double time_row = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Row-major: %f seconds\n", time_row);
 
+	memset(C_columns[0], 0, rows * columns * sizeof(int));
     start = clock();
     column_major_mul(rows, columns, A, B, C_columns);
     end = clock();
 	double time_column = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Column-major: %f seconds\n", time_column);
 
+	// double time_row = 0.0; // desactivadas temporalmente
+	// double time_column = 0.0; // desactivadas temporalmente
+
+	memset(C_zorder[0], 0, rows * columns * sizeof(int));
 	start = clock();
-    row_major_mul(rows, columns, A, B, C_rows);
+    zorder_mul(rows, columns, A, B, C_zorder, block_size);
     end = clock();
-	double time_row = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Row-major: %f seconds\n", time_row);
+	double time_zorder = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Z-order: %f seconds\n", time_zorder);
 
 	
 
@@ -196,11 +217,11 @@ int main(int argc, char *argv[])
 
     // Free matrices
 
-    free_matrix(rows, A);
-    free_matrix(rows, B);
-    free_matrix(rows, C_rows  );
-    free_matrix(rows, C_columns);
-    free_matrix(rows, C_zorder);
+    free_matrix(A);
+    free_matrix(B);
+    free_matrix(C_rows  );
+    free_matrix(C_columns);
+    free_matrix(C_zorder);
 
     
 

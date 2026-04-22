@@ -11,3 +11,16 @@ __pycache__/
 *.pyc
 *.pyo
 .env
+
+# Experiment outputs (raw SLURM results, CSVs, plots)
+sesion1/outputs/
+sesion2/outputs/
+Sesion3/outputs/
+
+# SLURM job output files
+slurm-*.out
+*.txt.slurm
+
+# Generated plots
+*.pdf
+*.png

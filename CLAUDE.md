@@ -130,6 +130,9 @@ Because this is a **learning project**, Claude should explain concepts when rele
 ## Environment notes
 
 - HPC cluster: `hpc.dptoinformatica.uniovi.es` (Universidad de Oviedo)
+- SSH alias: `hpc-uo` (configured with SSH keys, no password needed)
+- Remote structure: sessions live directly in `~/sesion1/`, `~/sesion2/`, etc. — no `CAP/` parent folder
+- Sync command: `rsync -av sesion1/ hpc-uo:~/sesion1/`
 - GPU partition: `gpu-20` with NVIDIA A100 GPUs
 - Conda environment: `cuda13` at `/soft/miniconda3/`
 - C standard: C11 (`-std=c11 -Wall -Wextra -pedantic`)
