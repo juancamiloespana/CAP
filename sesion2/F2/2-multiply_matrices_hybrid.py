@@ -46,9 +46,9 @@ def generate_matrix(rows, cols):
 
    
 if __name__ == "__main__":
-    
-    # Get matrices size
-    
+
+	time_total_start = time.time()
+
 	rows=int(sys.argv[1]) 
 	cols=int(sys.argv[2])
 	block_size=int(sys.argv[3])
@@ -94,10 +94,15 @@ if __name__ == "__main__":
 	zorder_time = time.time() - start_time
     
 
-	print(f'{rows}, Cols={cols}, block_size={block_size}')
-	print(f'Row-major time: {row_major_time:.6f} seconds')
-	print(f'Column-major time: {column_major_time:.6f} seconds')
-	print(f'Z-order time: {zorder_time:.6f} seconds')
-		
-	
-    
+	print(f"\n\n################ Parámetros ################\n")
+	print(f"rows: {rows}\ncols: {cols}\nblock size: {block_size}")
+
+	print(f"\n\n################ Tiempos ################\n")
+	print(f"Row-major: {row_major_time:.6f} seconds")
+	print(f"Column-major: {column_major_time:.6f} seconds")
+	print(f"Z-order: {zorder_time:.6f} seconds")
+
+	time_total = time.time() - time_total_start
+	print(f"Total:    {time_total:.6f} seconds")
+
+	print(f"{rows},{cols},{block_size},{zorder_time:.4f},{column_major_time:.4f},{row_major_time:.4f},{time_total:.4f}", file=sys.stderr)

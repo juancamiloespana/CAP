@@ -1,8 +1,19 @@
 import subprocess
+import sys
 import os
 from datetime import datetime
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+sesion2_dir = os.path.dirname(os.path.abspath(__file__))
+
+VALID_TARGETS = ["F1", "F2", "F3"]
+
+if len(sys.argv) < 2 or sys.argv[1] not in VALID_TARGETS:
+    print(f"Uso: python3 exp_run.py <{'|'.join(VALID_TARGETS)}> [prefijo]")
+    sys.exit(1)
+
+target = sys.argv[1]
+_prefix = sys.argv[2] if len(sys.argv) > 2 else ""
+script_dir = os.path.join(sesion2_dir, target)
 
 
 def build_block_jobs(matrix_sizes, block_sizes):
@@ -26,8 +37,8 @@ def submit_job(rows, cols, block_size, folder):
 def run_experiment(name, matrix_sizes, block_sizes, repetitions=1):
     jobs = build_block_jobs(matrix_sizes, block_sizes)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    folder = f"{name.replace(' ', '_')}_{timestamp}"
-    print(f"\n--- {name} ({len(jobs)} jobs x {repetitions} repeticiones) ---")
+    folder = f"{_prefix}_{timestamp}" if _prefix else timestamp
+    print(f"\n--- [{target}] {name} ({len(jobs)} jobs x {repetitions} repeticiones) ---")
     print(f"    carpeta: outputs/{folder}")
     for rep in range(repetitions):
         print(f"  [rep {rep + 1}/{repetitions}]")
@@ -36,38 +47,27 @@ def run_experiment(name, matrix_sizes, block_sizes, repetitions=1):
     print("All jobs submitted.")
 
 
-
 #########################################################################################
-#####----------------------- Experimento 0: verificar aleatoriedad de tiempos-------#####
+#####----------------------- Experimento F1/F2/F3: Verificar tamaño usando dos tam de bloques ----------------#####
 #########################################################################################
-
-# run_experiment(
-#     name="Aleatoriedad de tiempos de una misma configuración",
-#     matrix_sizes=[1536],
-#     block_sizes=[ 512],
-#     repetitions=30,
-# )
-
-
-# #########################################################################################
-# #####----------------------- Experimento 1: Barrido de block size ------------------#####
-# #########################################################################################
 
 run_experiment(
-    name="Barrido de block size",
-    matrix_sizes=[1024, 2048, 3072],
-    block_sizes=[8, 16, 32, 64, 128, 256, 512, 1024],
-    repetitions=5,
+    name="Aleatoriedad de tiempos de una misma configuración",
+    matrix_sizes=[256, 512, 1024, 2048],
+    block_sizes=[ 256, 512],
+    repetitions=1,
 )
 
 
+
 # #########################################################################################
-# #####          Experimento 2: Tamaño de matrices con bloque fijo (b=512)         ########
+# #####----------------------- Experimento F2: Verificar tamaño usando dos tam de bloques ----------------#####
 # #########################################################################################
 
 # run_experiment(
-#     name="Tamaño de matrices con bloque fijo (b=512)",
-#     matrix_sizes=[1024, 2048, 3072, 4096, 5120],
-#     block_sizes=[512],
-#     repetitions=5,
+#     name="Aleatoriedad de tiempos de una misma configuración",
+#     matrix_sizes=[256, 512, 1024, 2048],
+#     block_sizes=[ 256, 512],
+#     repetitions=1,
 # )
+

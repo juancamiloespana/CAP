@@ -1,4 +1,0 @@
-1000, Cols=1000, block_size=100
-Row-major time: 4.609679 seconds
-Column-major time: 4.214860 seconds
-Z-order time: 4.306013 seconds

@@ -127,6 +127,51 @@ Because this is a **learning project**, Claude should explain concepts when rele
 
 ---
 
+## sesion2 analysis pipeline (completed)
+
+### exp_analysis.py (`sesion2/exp_analysis.py`)
+Single script that loads, analyzes and plots all three phases. Run from `sesion2/` directory.
+
+**Functions:**
+- `load_logs(folder)` — reads all `logs_*.txt` from `outputs/<folder>/`, returns DataFrame
+- `compare_block_sizes(df)` — prints Z-order pivot table for b=256 vs b=512
+- `table_times(df, label)` — prints mean times per method and matrix size
+- `table_diff_vs_row(df, label)` — prints differences vs row-major as base (`*` marks baseline)
+- `plot_methods(df, title, path)` — line chart: three methods vs matrix size
+- `plot_total_vs_sum(df, title, path)` — line chart: time_total vs Sum_times
+
+**Per-phase pattern** (F1, F2, F3):
+1. `load_logs(FOLDER)` with b=256 filter
+2. `df["Sum_times"] = time_zorder + time_row + time_col`
+3. `compare_block_sizes` → `table_times` → `table_diff_vs_row` → `plot_methods` → `plot_total_vs_sum`
+
+**Comparative section** generates two layout figures:
+- `comp_total_sum.pdf` — subplot left: time_total, subplot right: Sum_times, all three phases
+- `comp_metodos.pdf` — three subplots, one per method (row/col/zorder), all three phases
+
+**Output graphs saved to:** `sesion2/outputs/graphs/`
+
+### Experiment folders used
+| Phase | Folder |
+|---|---|
+| F1 | `F1_met_size_2026-04-22_10-59-59` |
+| F2 | `F2_met_size_2026-04-22_11-00-04` |
+| F3 | `F3_met_size_2026-04-22_11-00-09` |
+
+### Key experimental findings
+- Block size (b=256 vs b=512) has no significant effect in any phase (<2%)
+- **F1**: column-major slowest, z-order fastest; total ≈ sum (overhead negligible)
+- **F2**: row-major becomes slowest for large N (inverted vs expected); total - sum = 1-6s (Python conversion overhead)
+- **F3**: same method order as F2; total - sum ≈ 0.07-0.6s (only interpreter startup overhead)
+- F1 is ~14-17× slower than F2/F3 for 2048×2048; F2 and F3 multiplication times are indistinguishable
+- In F2, row-major being slower than column-major for large N is hypothesized to relate to pointer array access patterns and prefetcher behavior with dispersed row memory layout
+
+### LaTeX report
+`sesion2/F2/informe.tex` — sections for F1, F2, F3, and comparative analysis with figure references.
+Figures referenced from `images/` folder (same names as `outputs/graphs/` PDFs/PNGs).
+
+---
+
 ## Environment notes
 
 - HPC cluster: `hpc.dptoinformatica.uniovi.es` (Universidad de Oviedo)
